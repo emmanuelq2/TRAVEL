@@ -1,0 +1,48 @@
+# ── Core framework ────────────────────────────────────────────────────────────
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+python-multipart==0.0.20
+websockets==13.1
+pydantic==2.10.4
+pydantic-settings==2.7.0
+
+# ── ASR providers ─────────────────────────────────────────────────────────────
+openai==1.59.6                  # Whisper-1 / large-v3 via OpenAI API
+deepgram-sdk>=6.1.1             # Nova-3 streaming + batch (SDK v6, NOT v3)
+
+# ── Claude (dialogue manager) ─────────────────────────────────────────────────
+anthropic>=0.40.0               # claude-sonnet-4-6, prompt caching, tool use
+
+# ── VAD ───────────────────────────────────────────────────────────────────────
+silero-vad>=5.1                 # Silero VAD model (torch-based, ~1 MB ONNX)
+torch>=2.2.0                    # required by silero-vad
+
+# ── NLP / NER ─────────────────────────────────────────────────────────────────
+spacy>=3.7.4                    # NER pipeline + EntityRuler for aviation vocab
+# run after install: python -m spacy download en_core_web_sm
+dateparser==1.2.0               # natural-language date normalizer ("next Friday")
+
+# ── Diarization ───────────────────────────────────────────────────────────────
+pyannote.audio>=3.3.0           # speaker diarization (requires HF token)
+# pyannote.audio pulls in torch, torchaudio automatically
+
+# ── Language detection ────────────────────────────────────────────────────────
+langdetect==1.0.9
+lingua-language-detector>=2.1.0
+
+# ── Audio processing ──────────────────────────────────────────────────────────
+pydub==0.25.1
+audioop-lts>=0.2.1          # audioop backport required by pydub on Python 3.13+
+imageio-ffmpeg>=0.5.1       # bundled ffmpeg binary — avoids system PATH dependency on Windows
+soundfile==0.12.1
+numpy>=1.26.0
+
+# ── Observability ─────────────────────────────────────────────────────────────
+structlog==24.4.0
+prometheus-fastapi-instrumentator==7.0.0
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest==8.3.4
+pytest-asyncio==0.24.0
+httpx==0.28.1
+pytest-mock==3.14.0

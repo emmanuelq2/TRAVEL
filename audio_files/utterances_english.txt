@@ -1,0 +1,113 @@
+# Aviation Voice Assistant — English Test Utterances
+# 75 utterances organised by intent
+# Record each one naturally, as you would speak to a voice assistant.
+
+# ── SEARCH_FLIGHT (25) ────────────────────────────────────────────────────────
+
+## Simple
+1.  I want to fly from Paris to Manila.
+2.  Book me a flight from London to New York.
+3.  I need a ticket from CDG to MNL on April 20th.
+4.  Can you find flights from Nairobi to Lagos?
+5.  Search for a flight from Lima to Santiago please.
+6.  I'd like to travel from Dubai to Singapore next Friday.
+7.  Find me a business class flight from Paris to Tokyo.
+8.  I want to book economy from Montreal to Miami on May 5th.
+9.  Two adults flying from London Heathrow to Cape Town.
+10. I need a first class ticket from New York to Paris.
+
+## Complex
+11. I want to fly from Charles de Gaulle to Ninoy Aquino on April 20th in business class.
+12. Book three passengers from Nairobi to Addis Ababa departing next Monday.
+13. Find me a non-stop from JFK to CDG on the 15th of May, coming back on the 22nd.
+14. I'd like to travel with Air France from Paris to Manila, business class, two passengers.
+15. Looking for the cheapest economy ticket from Lagos to London next week.
+16. Can I get a flight from Lima to Cusco on March 3rd for one adult?
+17. I want to go from Casablanca to Dakar in premium economy, return trip.
+18. Search for flights from São Paulo Guarulhos to Buenos Aires on June 1st.
+19. Book a flight from Johannesburg to Nairobi on the 10th, one passenger, economy.
+20. Find a round trip from Singapore Changi to Sydney on July 4th, back July 18th.
+
+## Edge cases
+21. AF three eighty.
+22. Paris CDG to MNL April twentieth biz class one pax.
+23. I think I want to maybe go somewhere warm in April.
+24. Um… I need to get to Manila somehow, maybe next month?
+25. Paris to Manila, business, the 20th.
+
+# ── FLIGHT_STATUS (10) ───────────────────────────────────────────────────────
+
+26. What is the status of flight AF 447?
+27. Is flight BA 2490 on time?
+28. Has flight EK 76 landed yet?
+29. When does flight AF 380 depart?
+30. Is my flight delayed? I'm on LH 401.
+31. What gate is flight AF 384 departing from?
+32. Can you check if flight QR 42 has arrived?
+33. Is there a delay on flight EK 501 today?
+34. What's the status of the 14:45 Air France flight to Manila?
+35. My flight number is BA 306 — is it on time?
+
+# ── BAGGAGE_INFO (8) ─────────────────────────────────────────────────────────
+
+36. How much baggage can I bring in economy class?
+37. What is the carry-on allowance for business class?
+38. Can I bring a musical instrument on board?
+39. How many kilos am I allowed in my checked bag?
+40. Is there an extra fee for a second suitcase?
+41. What are the baggage rules for Air France?
+42. Can I bring liquids in my hand luggage?
+43. What happens if my bag is overweight?
+
+# ── CHECK_IN (8) ─────────────────────────────────────────────────────────────
+
+44. How do I check in for my flight?
+45. Can I check in online for Air France?
+46. When does online check-in open for my flight?
+47. I need a boarding pass for flight AF 380.
+48. Can I choose my seat during check-in?
+49. Where is the check-in counter for Air France?
+50. How early should I arrive for check-in?
+51. Can I check in at the airport on the day of departure?
+
+# ── LOUNGE_ACCESS (8) ────────────────────────────────────────────────────────
+
+52. Is there a lounge near gate F32?
+53. Can I access the Air France lounge with a business class ticket?
+54. Where is the VIP lounge in terminal 2?
+55. What lounges are available at Charles de Gaulle?
+56. Do I have priority access to the lounge with my ticket?
+57. Is there a quiet lounge at Heathrow Terminal 5?
+58. Can I bring a guest to the lounge?
+59. What time does the lounge open?
+
+# ── CHANGE_BOOKING (4) ───────────────────────────────────────────────────────
+
+60. I want to change my flight to next Monday.
+61. Can I reschedule my booking to April 25th?
+62. I need to modify my return date.
+63. Can I change my seat to an aisle seat?
+
+# ── CANCEL_BOOKING (4) ───────────────────────────────────────────────────────
+
+64. I want to cancel my booking.
+65. Can I get a refund for my cancelled flight?
+66. How do I cancel my Air France ticket?
+67. I need to void my ticket — what's the cancellation fee?
+
+# ── AIRPORT_INFO (8) ─────────────────────────────────────────────────────────
+
+68. Where is the nearest restaurant in terminal 2?
+69. Is there a pharmacy at Charles de Gaulle airport?
+70. Where can I find the taxi stand at JFK?
+71. What is the WiFi password at Heathrow?
+72. How do I get from terminal 1 to terminal 2 at CDG?
+73. Is there a currency exchange at the airport?
+74. Where can I find a luggage cart at Schiphol?
+75. What time does the duty-free shop close?
+
+# ── EDGE CASES ────────────────────────────────────────────────────────────────
+# Record these to test robustness:
+# E1. [Pure silence or background noise]  → should return 422 No speech detected
+# E2. [Speak very fast and clipped]       → tests ASR robustness
+# E3. [Whisper quietly]                   → tests VAD threshold

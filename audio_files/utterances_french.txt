@@ -1,0 +1,61 @@
+# Aviation Voice Assistant — Énoncés de test en français
+# 25 énoncés organisés par intention
+# Enregistrez chacun naturellement, comme vous parleriez à un assistant vocal.
+
+# ── SEARCH_FLIGHT (12) ───────────────────────────────────────────────────────
+
+## Simple
+1.  Je veux réserver un vol de Paris à Manille.
+2.  Trouvez-moi un billet de CDG à Londres pour demain matin.
+3.  Je cherche un vol aller-retour de Paris à Dakar pour deux personnes.
+4.  Réservez-moi un vol de Nairobi à Addis-Abeba en classe économique.
+5.  Je voudrais voyager de Montréal à Paris le 15 mai en première classe.
+6.  Cherche un vol de Casablanca à Paris le vendredi prochain.
+
+## Complexe
+7.  Je veux réserver un vol de Paris à Manille pour le 20 avril en classe affaires.
+8.  Un billet de Paris à Singapour pour trois passagers s'il vous plaît.
+9.  Je veux partir de Lyon à Amsterdam le 2 juin en économie.
+10. Trouvez un vol Paris Orly vers New York pour le week-end prochain.
+11. Je voudrais un vol de Paris à Rio de Janeiro aller simple.
+12. Je veux aller de Paris à Manille le vingt avril deux mille vingt-six en affaires pour deux personnes.
+
+# ── FLIGHT_STATUS (3) ────────────────────────────────────────────────────────
+
+13. Quel est le statut du vol AF 447 ?
+14. Le vol EK 76 est-il à l'heure ?
+15. Mon vol AF 384 a-t-il du retard ?
+
+# ── BAGGAGE_INFO (2) ─────────────────────────────────────────────────────────
+
+16. Quelle est la franchise bagage en classe économique ?
+17. Puis-je emporter deux valises en soute ?
+
+# ── CHECK_IN (2) ─────────────────────────────────────────────────────────────
+
+18. Comment faire mon enregistrement en ligne ?
+19. À quelle heure ouvre l'enregistrement pour mon vol ?
+
+# ── LOUNGE_ACCESS (2) ────────────────────────────────────────────────────────
+
+20. Y a-t-il un salon VIP au terminal 2F ?
+21. J'ai un billet en classe affaires, puis-je accéder au salon Air France ?
+
+# ── CHANGE_BOOKING (1) ───────────────────────────────────────────────────────
+
+22. Je voudrais modifier mon vol pour le lendemain.
+
+# ── CANCEL_BOOKING (1) ───────────────────────────────────────────────────────
+
+23. Je veux annuler ma réservation et être remboursé.
+
+# ── AIRPORT_INFO (2) ─────────────────────────────────────────────────────────
+
+24. Où se trouve la pharmacie au terminal 2 de CDG ?
+25. Comment aller du terminal 1 au terminal 2 à Roissy ?
+
+# ── CAS LIMITES ───────────────────────────────────────────────────────────────
+# Enregistrez ces cas pour tester la robustesse :
+# F1. [Silence complet ou bruit de fond]  → doit retourner 422 No speech detected
+# F2. [Parler très vite]                  → teste la robustesse de l'ASR
+# F3. [Chuchoter doucement]               → teste le seuil du VAD
