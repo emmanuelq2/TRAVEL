@@ -7,6 +7,7 @@ pydantic==2.10.4
 pydantic-settings==2.7.0
 
 # ── ASR providers ─────────────────────────────────────────────────────────────
+cohere>=5.0.0                  # Cohere Transcribe SDK
 openai==1.59.6                  # Whisper-1 / large-v3 via OpenAI API
 deepgram-sdk>=6.1.1             # Nova-3 streaming + batch (SDK v6, NOT v3)
 
