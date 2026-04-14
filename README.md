@@ -1,5 +1,8 @@
 # Aviation Voice Assistant
 
+[![CI](https://github.com/emmanuelq2/TRAVEL/actions/workflows/ci.yml/badge.svg)](https://github.com/emmanuelq2/TRAVEL/actions/workflows/ci.yml)
+[![Lint and Format](https://github.com/emmanuelq2/TRAVEL/actions/workflows/lint.yml/badge.svg)](https://github.com/emmanuelq2/TRAVEL/actions/workflows/lint.yml)
+
 Multilingual (EN/FR) airport chatbot with a full speech pipeline.
 
 **Pipeline:** VAD → LID → ASR → NER → Slot Fill → Diarization → Claude agent
