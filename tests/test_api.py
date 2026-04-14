@@ -25,6 +25,7 @@ from app.nlp.slot_filler import FlightSlots, Intent, ParsedUtterance
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
+
 def _make_wav(duration_s: float = 1.0, sample_rate: int = 16_000) -> bytes:
     """Generate a minimal valid WAV file (silence) for upload tests."""
     n_samples = int(sample_rate * duration_s)
@@ -51,8 +52,8 @@ _MOCK_PARSED = ParsedUtterance(
     raw_entities=[
         {"label": "AIRPORT", "text": "Paris"},
         {"label": "AIRPORT", "text": "Manila"},
-        {"label": "DATE",    "text": "April 20"},
-        {"label": "CABIN",   "text": "business"},
+        {"label": "DATE", "text": "April 20"},
+        {"label": "CABIN", "text": "business"},
     ],
     missing_slots=["departure_date"],
     language="en",
@@ -60,6 +61,7 @@ _MOCK_PARSED = ParsedUtterance(
 
 
 # ── Fixtures ───────────────────────────────────────────────────────────────────
+
 
 @pytest.fixture(scope="module")
 def client():
@@ -78,9 +80,12 @@ def client():
 
 # ── Health endpoint ────────────────────────────────────────────────────────────
 
+
 def test_health(client):
     mock_router = MagicMock()
-    mock_router.health = AsyncMock(return_value={"cohere": True, "deepgram": True, "whisper": True})
+    mock_router.health = AsyncMock(
+        return_value={"cohere": True, "deepgram": True, "whisper": True}
+    )
     with patch("app.main.get_asr_router", return_value=mock_router):
         resp = client.get("/health")
     assert resp.status_code == 200
@@ -90,6 +95,7 @@ def test_health(client):
 
 
 # ── POST /v1/audio/transcribe ──────────────────────────────────────────────────
+
 
 @patch("app.api.v1.audio.get_vad")
 @patch("app.api.v1.audio.get_asr_router")
@@ -120,6 +126,7 @@ def test_transcribe_endpoint(mock_router_factory, mock_vad_factory, client):
 
 
 # ── POST /v1/audio/query ───────────────────────────────────────────────────────
+
 
 @patch("app.api.v1.audio.get_vad")
 @patch("app.api.v1.audio.get_asr_router")

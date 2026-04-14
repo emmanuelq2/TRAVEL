@@ -37,14 +37,15 @@ logger = get_logger(__name__)
 
 # ── Response models ────────────────────────────────────────────────────────────
 
+
 class TranscribeResponse(BaseModel):
     transcript: str
     language: str
     confidence: float
     provider: str
-    entities: list[dict]           # [{label, text}, ...]
+    entities: list[dict]  # [{label, text}, ...]
     slots: dict
-    speakers: list[dict]           # [{speaker, start_s, end_s, text}]
+    speakers: list[dict]  # [{speaker, start_s, end_s, text}]
 
 
 class QueryResponse(BaseModel):
@@ -58,6 +59,7 @@ class QueryResponse(BaseModel):
 
 # ── Endpoints ──────────────────────────────────────────────────────────────────
 
+
 @router.post("/transcribe", response_model=TranscribeResponse)
 async def transcribe(
     file: UploadFile = File(..., description="Audio file (wav/mp3/ogg/webm)"),
@@ -69,14 +71,17 @@ async def transcribe(
     optional speaker diarization.
     """
     audio_bytes = await file.read()
-    audio_format = _guess_format(file.filename or "audio.wav")
 
     # Sanitise language hint — reject Swagger placeholder "string"
-    lang_hint = language if language and language.lower() not in ("string", "none", "") else None
+    lang_hint = (
+        language
+        if language and language.lower() not in ("string", "none", "")
+        else None
+    )
 
     # 1. VAD
     vad = get_vad()
-    clean_audio = vad.extract_speech(audio_bytes)   # always outputs 16-bit WAV
+    clean_audio = vad.extract_speech(audio_bytes)  # always outputs 16-bit WAV
 
     # 2. ASR
     asr = get_asr_router()
@@ -106,7 +111,12 @@ async def transcribe(
         entities=parsed.raw_entities,  # type: ignore[arg-type]
         slots=parsed.slots.model_dump(mode="json"),
         speakers=[
-            {"speaker": s.speaker, "start_s": s.start_s, "end_s": s.end_s, "text": s.text}
+            {
+                "speaker": s.speaker,
+                "start_s": s.start_s,
+                "end_s": s.end_s,
+                "text": s.text,
+            }
             for s in speakers
         ],
     )
@@ -123,18 +133,21 @@ async def query(
     Maintains multi-turn conversation via session_id.
     """
     audio_bytes = await file.read()
-    audio_format = _guess_format(file.filename or "audio.wav")
     sid = session_id or str(uuid.uuid4())
 
     # Sanitise language hint — reject Swagger placeholder "string"
-    lang_hint = language if language and language.lower() not in ("string", "none", "") else None
+    lang_hint = (
+        language
+        if language and language.lower() not in ("string", "none", "")
+        else None
+    )
 
     # VAD → ASR
     vad = get_vad()
     if not vad.has_speech(audio_bytes):
         raise HTTPException(status_code=422, detail="No speech detected in audio.")
 
-    clean = vad.extract_speech(audio_bytes)   # always outputs 16-bit WAV
+    clean = vad.extract_speech(audio_bytes)  # always outputs 16-bit WAV
     asr = get_asr_router()
     result = await asr.transcribe(clean, hint_language=lang_hint, audio_format="wav")
 
@@ -160,6 +173,7 @@ async def query(
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
+
 
 def _guess_format(filename: str) -> str:
     ext = filename.rsplit(".", 1)[-1].lower()

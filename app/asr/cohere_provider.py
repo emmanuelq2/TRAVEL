@@ -55,13 +55,22 @@ class CohereProvider(BaseASRProvider):
 
         kwargs: dict = {
             "model": self._model,
-            "file": (f"audio.{audio_format}", io.BytesIO(audio_bytes), f"audio/{audio_format}"),
+            "file": (
+                f"audio.{audio_format}",
+                io.BytesIO(audio_bytes),
+                f"audio/{audio_format}",
+            ),
             "language": hint_language or "en",
         }
 
         response = await self._client.audio.transcriptions.create(**kwargs)
 
-        logger.debug("cohere_raw_response", fields=list(response.__fields_set__) if hasattr(response, '__fields_set__') else dir(response))
+        logger.debug(
+            "cohere_raw_response",
+            fields=list(response.__fields_set__)
+            if hasattr(response, "__fields_set__")
+            else dir(response),
+        )
 
         text = response.text
         if text is None:
@@ -77,7 +86,7 @@ class CohereProvider(BaseASRProvider):
         return TranscriptionResult(
             text=text,
             language=detected_lang,
-            confidence=1.0,          # Cohere does not expose per-token confidence
+            confidence=1.0,  # Cohere does not expose per-token confidence
             provider=self.name,
         )
 

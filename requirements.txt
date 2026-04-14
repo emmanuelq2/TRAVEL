@@ -32,7 +32,7 @@ lingua-language-detector>=2.1.0
 
 # ── Audio processing ──────────────────────────────────────────────────────────
 pydub==0.25.1
-audioop-lts>=0.2.1          # audioop backport required by pydub on Python 3.13+
+audioop-lts>=0.2.1; python_version >= "3.13"  # audioop backport required on Python 3.13+
 imageio-ffmpeg>=0.5.1       # bundled ffmpeg binary — avoids system PATH dependency on Windows
 soundfile==0.12.1
 numpy>=1.26.0

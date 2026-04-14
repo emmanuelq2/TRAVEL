@@ -35,13 +35,31 @@ TOOLS: list[dict] = [
         "input_schema": {
             "type": "object",
             "properties": {
-                "origin":         {"type": "string", "description": "Origin IATA code (e.g. CDG)"},
-                "destination":    {"type": "string", "description": "Destination IATA code (e.g. JFK)"},
-                "departure_date": {"type": "string", "description": "ISO date (YYYY-MM-DD)"},
-                "return_date":    {"type": "string", "description": "ISO date for return, or null for one-way"},
-                "cabin_class":    {"type": "string", "enum": ["economy", "premium_economy", "business", "first"]},
-                "passenger_count":{"type": "integer", "minimum": 1, "maximum": 9},
-                "airline_pref":   {"type": "string", "description": "Preferred airline IATA code, or null"},
+                "origin": {
+                    "type": "string",
+                    "description": "Origin IATA code (e.g. CDG)",
+                },
+                "destination": {
+                    "type": "string",
+                    "description": "Destination IATA code (e.g. JFK)",
+                },
+                "departure_date": {
+                    "type": "string",
+                    "description": "ISO date (YYYY-MM-DD)",
+                },
+                "return_date": {
+                    "type": "string",
+                    "description": "ISO date for return, or null for one-way",
+                },
+                "cabin_class": {
+                    "type": "string",
+                    "enum": ["economy", "premium_economy", "business", "first"],
+                },
+                "passenger_count": {"type": "integer", "minimum": 1, "maximum": 9},
+                "airline_pref": {
+                    "type": "string",
+                    "description": "Preferred airline IATA code, or null",
+                },
             },
             "required": ["origin", "destination", "departure_date"],
         },
@@ -52,8 +70,14 @@ TOOLS: list[dict] = [
         "input_schema": {
             "type": "object",
             "properties": {
-                "flight_number": {"type": "string", "description": "Flight designator (e.g. AF447, BA2490)"},
-                "date":          {"type": "string", "description": "Flight date ISO (YYYY-MM-DD), or null for today"},
+                "flight_number": {
+                    "type": "string",
+                    "description": "Flight designator (e.g. AF447, BA2490)",
+                },
+                "date": {
+                    "type": "string",
+                    "description": "Flight date ISO (YYYY-MM-DD), or null for today",
+                },
             },
             "required": ["flight_number"],
         },
@@ -64,8 +88,11 @@ TOOLS: list[dict] = [
         "input_schema": {
             "type": "object",
             "properties": {
-                "airline":     {"type": "string", "description": "Airline IATA code"},
-                "cabin_class": {"type": "string", "enum": ["economy", "premium_economy", "business", "first"]},
+                "airline": {"type": "string", "description": "Airline IATA code"},
+                "cabin_class": {
+                    "type": "string",
+                    "enum": ["economy", "premium_economy", "business", "first"],
+                },
             },
             "required": ["airline", "cabin_class"],
         },
@@ -76,9 +103,17 @@ TOOLS: list[dict] = [
         "input_schema": {
             "type": "object",
             "properties": {
-                "airport":   {"type": "string", "description": "Airport IATA code"},
-                "info_type": {"type": "string",
-                              "enum": ["terminals", "lounges", "restaurants", "wifi", "transport"]},
+                "airport": {"type": "string", "description": "Airport IATA code"},
+                "info_type": {
+                    "type": "string",
+                    "enum": [
+                        "terminals",
+                        "lounges",
+                        "restaurants",
+                        "wifi",
+                        "transport",
+                    ],
+                },
             },
             "required": ["airport"],
         },

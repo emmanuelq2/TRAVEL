@@ -30,29 +30,60 @@ from app.core.logging import get_logger
 logger = get_logger(__name__)
 
 _DATEPARSER_SETTINGS = {
-    "PREFER_DATES_FROM": "future",      # airport context: always booking ahead
+    "PREFER_DATES_FROM": "future",  # airport context: always booking ahead
     "RETURN_AS_TIMEZONE_AWARE": False,
     "PREFER_DAY_OF_MONTH": "first",
 }
-_LANGUAGES = ["en", "fr"]   # passed as separate kwarg, not inside settings dict
+_LANGUAGES = ["en", "fr"]  # passed as separate kwarg, not inside settings dict
 
 # Ordinal words → digits  (spoken ASR output: "twentieth" → "20")
 _ORDINALS = {
-    "first": "1", "second": "2", "third": "3", "fourth": "4", "fifth": "5",
-    "sixth": "6", "seventh": "7", "eighth": "8", "ninth": "9", "tenth": "10",
-    "eleventh": "11", "twelfth": "12", "thirteenth": "13", "fourteenth": "14",
-    "fifteenth": "15", "sixteenth": "16", "seventeenth": "17", "eighteenth": "18",
-    "nineteenth": "19", "twentieth": "20", "twenty-first": "21", "twenty first": "21",
-    "twenty-second": "22", "twenty second": "22", "twenty-third": "23",
-    "twenty third": "23", "twenty-fourth": "24", "twenty fourth": "24",
-    "twenty-fifth": "25", "twenty fifth": "25", "twenty-sixth": "26",
-    "twenty sixth": "26", "twenty-seventh": "27", "twenty seventh": "27",
-    "twenty-eighth": "28", "twenty eighth": "28", "twenty-ninth": "29",
-    "twenty ninth": "29", "thirtieth": "30", "thirty-first": "31",
+    "first": "1",
+    "second": "2",
+    "third": "3",
+    "fourth": "4",
+    "fifth": "5",
+    "sixth": "6",
+    "seventh": "7",
+    "eighth": "8",
+    "ninth": "9",
+    "tenth": "10",
+    "eleventh": "11",
+    "twelfth": "12",
+    "thirteenth": "13",
+    "fourteenth": "14",
+    "fifteenth": "15",
+    "sixteenth": "16",
+    "seventeenth": "17",
+    "eighteenth": "18",
+    "nineteenth": "19",
+    "twentieth": "20",
+    "twenty-first": "21",
+    "twenty first": "21",
+    "twenty-second": "22",
+    "twenty second": "22",
+    "twenty-third": "23",
+    "twenty third": "23",
+    "twenty-fourth": "24",
+    "twenty fourth": "24",
+    "twenty-fifth": "25",
+    "twenty fifth": "25",
+    "twenty-sixth": "26",
+    "twenty sixth": "26",
+    "twenty-seventh": "27",
+    "twenty seventh": "27",
+    "twenty-eighth": "28",
+    "twenty eighth": "28",
+    "twenty-ninth": "29",
+    "twenty ninth": "29",
+    "thirtieth": "30",
+    "thirty-first": "31",
     "thirty first": "31",
 }
 _ORDINAL_RE = re.compile(
-    r"\b(" + "|".join(re.escape(k) for k in sorted(_ORDINALS, key=len, reverse=True)) + r")\b",
+    r"\b("
+    + "|".join(re.escape(k) for k in sorted(_ORDINALS, key=len, reverse=True))
+    + r")\b",
     re.IGNORECASE,
 )
 

@@ -33,9 +33,8 @@ Usage
 
 from __future__ import annotations
 
-import io
 import tempfile
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from app.core.config import get_settings
 from app.core.logging import get_logger
@@ -117,9 +116,7 @@ class SpeakerDiarizer:
 
         for seg in segments:
             seg.text = " ".join(
-                w["word"]
-                for w in words
-                if seg.start_s <= w.get("start", 0) < seg.end_s
+                w["word"] for w in words if seg.start_s <= w.get("start", 0) < seg.end_s
             )
         return segments
 
@@ -129,6 +126,7 @@ class SpeakerDiarizer:
     def _load_pipeline(hf_token: str):
         try:
             from pyannote.audio import Pipeline
+
             pipeline = Pipeline.from_pretrained(
                 "pyannote/speaker-diarization-3.1",
                 use_auth_token=hf_token or True,
@@ -136,6 +134,7 @@ class SpeakerDiarizer:
             # Move to GPU if available
             try:
                 import torch
+
                 if torch.cuda.is_available():
                     pipeline = pipeline.to(torch.device("cuda"))
             except Exception:

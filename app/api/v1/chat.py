@@ -88,23 +88,29 @@ async def stream_chat(websocket: WebSocket):
         asr = get_asr_router()
         async for chunk in asr.transcribe_stream(audio_gen()):
             if not chunk.is_final:
-                await websocket.send_json({
-                    "type": "interim",
-                    "text": chunk.text,
-                    "is_final": False,
-                })
+                await websocket.send_json(
+                    {
+                        "type": "interim",
+                        "text": chunk.text,
+                        "is_final": False,
+                    }
+                )
             else:
                 accumulated_text.append(chunk.text)
-                await websocket.send_json({
-                    "type": "final",
-                    "text": chunk.text,
-                    "language": "en",   # will be updated after LID below
-                })
+                await websocket.send_json(
+                    {
+                        "type": "final",
+                        "text": chunk.text,
+                        "language": "en",  # will be updated after LID below
+                    }
+                )
 
         # ── Post-stream NLU + agent turn ──────────────────────────────────────
         full_text = " ".join(accumulated_text).strip()
         if not full_text:
-            await websocket.send_json({"type": "error", "message": "No speech recognised."})
+            await websocket.send_json(
+                {"type": "error", "message": "No speech recognised."}
+            )
             return
 
         lang = detect_language(full_text)
@@ -115,13 +121,15 @@ async def stream_chat(websocket: WebSocket):
         session = get_or_create_session(session_id)
         reply = await manager.respond(session, parsed, full_text)
 
-        await websocket.send_json({
-            "type": "reply",
-            "text": reply,
-            "intent": parsed.intent,
-            "missing_slots": parsed.missing_slots,
-            "session_id": session_id,
-        })
+        await websocket.send_json(
+            {
+                "type": "reply",
+                "text": reply,
+                "intent": parsed.intent,
+                "missing_slots": parsed.missing_slots,
+                "session_id": session_id,
+            }
+        )
 
     except WebSocketDisconnect:
         logger.info("ws_disconnected", session_id=session_id)

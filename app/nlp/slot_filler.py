@@ -77,32 +77,38 @@ class ParsedUtterance(BaseModel):
     intent: Intent
     slots: FlightSlots
     raw_entities: list[dict]
-    missing_slots: list[str]    # slots required for the intent but not yet filled
+    missing_slots: list[str]  # slots required for the intent but not yet filled
     language: str = "en"
 
 
 # ── Intent detection ──────────────────────────────────────────────────────────
 
 _INTENT_PATTERNS: list[tuple[Intent, list[str]]] = [
-    (Intent.flight_status,  ["status", "delayed", "on time", "arrived", "departed"]),
-    (Intent.baggage_info,   ["baggage", "luggage", "bag", "suitcase", "carry-on", "allowance"]),
-    (Intent.check_in,       ["check in", "check-in", "boarding pass", "seat"]),
-    (Intent.lounge_access,  ["lounge", "vip", "priority"]),
+    (Intent.flight_status, ["status", "delayed", "on time", "arrived", "departed"]),
+    (
+        Intent.baggage_info,
+        ["baggage", "luggage", "bag", "suitcase", "carry-on", "allowance"],
+    ),
+    (Intent.check_in, ["check in", "check-in", "boarding pass", "seat"]),
+    (Intent.lounge_access, ["lounge", "vip", "priority"]),
     (Intent.change_booking, ["change", "modify", "reschedule", "rebook"]),
     (Intent.cancel_booking, ["cancel", "refund", "void"]),
-    (Intent.airport_info,   ["terminal", "gate", "map", "wifi", "restaurant", "pharmacy"]),
-    (Intent.search_flight,  ["book", "fly", "flight", "ticket", "search", "find"]),
+    (
+        Intent.airport_info,
+        ["terminal", "gate", "map", "wifi", "restaurant", "pharmacy"],
+    ),
+    (Intent.search_flight, ["book", "fly", "flight", "ticket", "search", "find"]),
 ]
 
 _FR_INTENT_PATTERNS: list[tuple[Intent, list[str]]] = [
-    (Intent.flight_status,  ["statut", "retard", "à l'heure", "porte", "arrivé"]),
-    (Intent.baggage_info,   ["bagage", "valise", "cabine", "franchise"]),
-    (Intent.check_in,       ["enregistrement", "carte d'embarquement", "siège"]),
-    (Intent.lounge_access,  ["salon", "priorité"]),
+    (Intent.flight_status, ["statut", "retard", "à l'heure", "porte", "arrivé"]),
+    (Intent.baggage_info, ["bagage", "valise", "cabine", "franchise"]),
+    (Intent.check_in, ["enregistrement", "carte d'embarquement", "siège"]),
+    (Intent.lounge_access, ["salon", "priorité"]),
     (Intent.change_booking, ["modifier", "changer", "reprogrammer"]),
     (Intent.cancel_booking, ["annuler", "remboursement"]),
-    (Intent.airport_info,   ["terminal", "porte", "plan", "wifi"]),
-    (Intent.search_flight,  ["réserver", "voler", "vol", "billet", "chercher"]),
+    (Intent.airport_info, ["terminal", "porte", "plan", "wifi"]),
+    (Intent.search_flight, ["réserver", "voler", "vol", "billet", "chercher"]),
 ]
 
 
@@ -137,8 +143,16 @@ _PAX_RE = re.compile(
     re.IGNORECASE,
 )
 _WORD_NUMS = {
-    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
-    "deux": 2, "trois": 3, "quatre": 4, "cinq": 5,
+    "one": 1,
+    "two": 2,
+    "three": 3,
+    "four": 4,
+    "five": 5,
+    "six": 6,
+    "deux": 2,
+    "trois": 3,
+    "quatre": 4,
+    "cinq": 5,
 }
 
 
@@ -153,19 +167,20 @@ def _extract_pax(text: str) -> int:
 # ── Required slots per intent ─────────────────────────────────────────────────
 
 _REQUIRED: dict[Intent, list[str]] = {
-    Intent.search_flight:  ["origin", "destination", "departure_date"],
-    Intent.flight_status:  ["flight_number"],
-    Intent.baggage_info:   [],
-    Intent.check_in:       [],
-    Intent.lounge_access:  [],
+    Intent.search_flight: ["origin", "destination", "departure_date"],
+    Intent.flight_status: ["flight_number"],
+    Intent.baggage_info: [],
+    Intent.check_in: [],
+    Intent.lounge_access: [],
     Intent.change_booking: [],
     Intent.cancel_booking: [],
-    Intent.airport_info:   [],
-    Intent.unknown:        [],
+    Intent.airport_info: [],
+    Intent.unknown: [],
 }
 
 
 # ── Main entry point ──────────────────────────────────────────────────────────
+
 
 class SlotFiller:
     def __init__(self, ner: AviationNER | None = None) -> None:
@@ -177,12 +192,12 @@ class SlotFiller:
 
         airports = [e for e in entities if e.label == "AIRPORT"]
         airlines = [e for e in entities if e.label == "AIRLINE"]
-        dates    = [e for e in entities if e.label == "DATE"]
-        cabins   = [e for e in entities if e.label == "CABIN"]
+        dates = [e for e in entities if e.label == "DATE"]
+        cabins = [e for e in entities if e.label == "CABIN"]
         flight_nos = [e for e in entities if e.label == "FLIGHT_NO"]
 
         origin = resolve_location(airports[0].text) if len(airports) >= 1 else None
-        dest   = resolve_location(airports[1].text) if len(airports) >= 2 else None
+        dest = resolve_location(airports[1].text) if len(airports) >= 2 else None
         dep_date = normalize_date(dates[0].text) if len(dates) >= 1 else None
         ret_date = normalize_date(dates[1].text) if len(dates) >= 2 else None
         cabin = _CABIN_MAP.get(cabins[0].text.lower()) if cabins else CabinClass.economy
@@ -200,10 +215,7 @@ class SlotFiller:
             flight_number=flight_no,
         )
 
-        missing = [
-            s for s in _REQUIRED.get(intent, [])
-            if getattr(slots, s) is None
-        ]
+        missing = [s for s in _REQUIRED.get(intent, []) if getattr(slots, s) is None]
 
         logger.info(
             "slot_fill_result",

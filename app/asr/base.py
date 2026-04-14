@@ -14,9 +14,9 @@ from typing import AsyncGenerator
 @dataclass
 class TranscriptionResult:
     text: str
-    language: str                       # detected BCP-47 code, e.g. "en", "fr"
+    language: str  # detected BCP-47 code, e.g. "en", "fr"
     confidence: float = 1.0
-    words: list[dict] = field(default_factory=list)   # [{word, start, end, conf}]
+    words: list[dict] = field(default_factory=list)  # [{word, start, end, conf}]
     provider: str = ""
 
 

@@ -20,16 +20,16 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class ASRProvider(StrEnum):
     cohere = "cohere"
     deepgram = "deepgram"
-    whisper = "whisper"         # kept as universal fallback
+    whisper = "whisper"  # kept as universal fallback
 
 
 class Settings(BaseSettings):
     # ── API keys ─────────────────────────────────────────────────────────────
     cohere_api_key: str = ""
     deepgram_api_key: str = ""
-    openai_api_key: str = ""          # Whisper fallback
+    openai_api_key: str = ""  # Whisper fallback
     anthropic_api_key: str = ""
-    huggingface_token: str = ""       # pyannote speaker diarization
+    huggingface_token: str = ""  # pyannote speaker diarization
 
     # ── ASR routing ──────────────────────────────────────────────────────────
     asr_batch_provider: ASRProvider = ASRProvider.cohere
@@ -42,10 +42,10 @@ class Settings(BaseSettings):
 
     # ── Deepgram ──────────────────────────────────────────────────────────────
     deepgram_model: str = "nova-3"
-    deepgram_hotwords_enabled: bool = True   # inject IATA vocab as keyword boosts
+    deepgram_hotwords_enabled: bool = True  # inject IATA vocab as keyword boosts
 
     # ── Whisper (fallback) ────────────────────────────────────────────────────
-    whisper_model: str = "whisper-1"         # OpenAI API alias for large-v3
+    whisper_model: str = "whisper-1"  # OpenAI API alias for large-v3
 
     # ── VAD ───────────────────────────────────────────────────────────────────
     vad_threshold: float = 0.5

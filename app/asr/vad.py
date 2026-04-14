@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import audioop
 import io
-import subprocess
 
 import numpy as np
 import soundfile as sf
@@ -65,7 +64,7 @@ class SileroVAD:
         segments = [
             {
                 "start_ms": int(t["start"] / sample_rate * 1_000),
-                "end_ms":   int(t["end"]   / sample_rate * 1_000),
+                "end_ms": int(t["end"] / sample_rate * 1_000),
             }
             for t in raw
         ]
@@ -84,8 +83,11 @@ class SileroVAD:
         data = self._load_mono_16k(audio_bytes, sample_rate).numpy()
 
         chunks = [
-            data[int(s["start_ms"] / 1_000 * sample_rate) :
-                 int(s["end_ms"]   / 1_000 * sample_rate)]
+            data[
+                int(s["start_ms"] / 1_000 * sample_rate) : int(
+                    s["end_ms"] / 1_000 * sample_rate
+                )
+            ]
             for s in segments
         ]
         speech = np.concatenate(chunks)
@@ -112,10 +114,12 @@ class SileroVAD:
         Fallback: imageio_ffmpeg (M4A / MP3 / WebM — bundled binary, no ffprobe)
         """
         try:
-            data, sr = sf.read(io.BytesIO(audio_bytes), dtype="float32", always_2d=False)
+            data, sr = sf.read(
+                io.BytesIO(audio_bytes), dtype="float32", always_2d=False
+            )
         except Exception:
             data, sr = self._decode_via_ffmpeg(audio_bytes, sample_rate)
-            return torch.from_numpy(data)   # already mono 16k from ffmpeg
+            return torch.from_numpy(data)  # already mono 16k from ffmpeg
 
         # Mix down to mono
         if data.ndim > 1:
@@ -130,7 +134,9 @@ class SileroVAD:
         return torch.from_numpy(data)
 
     @staticmethod
-    def _decode_via_ffmpeg(audio_bytes: bytes, sample_rate: int) -> tuple[np.ndarray, int]:
+    def _decode_via_ffmpeg(
+        audio_bytes: bytes, sample_rate: int
+    ) -> tuple[np.ndarray, int]:
         """
         Decode any audio format to float32 mono PCM using the bundled ffmpeg binary.
         Handles M4A, MP3, WebM, AAC — no ffprobe, no pydub needed.
@@ -151,12 +157,19 @@ class SileroVAD:
         try:
             cmd = [
                 ffmpeg_exe,
-                "-hide_banner", "-loglevel", "error",
-                "-i", tmp_path,
-                "-f", "f32le",
-                "-acodec", "pcm_f32le",
-                "-ar", str(sample_rate),
-                "-ac", "1",
+                "-hide_banner",
+                "-loglevel",
+                "error",
+                "-i",
+                tmp_path,
+                "-f",
+                "f32le",
+                "-acodec",
+                "pcm_f32le",
+                "-ar",
+                str(sample_rate),
+                "-ac",
+                "1",
                 "pipe:1",
             ]
             result = subprocess.run(cmd, capture_output=True)
@@ -165,6 +178,7 @@ class SileroVAD:
             data = np.frombuffer(result.stdout, dtype=np.float32).copy()
         finally:
             import os
+
             os.unlink(tmp_path)
 
         return data, sample_rate

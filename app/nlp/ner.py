@@ -39,9 +39,19 @@ from app.nlp.iata_vocab import build_spacy_patterns
 
 logger = get_logger(__name__)
 
-_CABIN_KEYWORDS = {"economy", "business", "first", "premium", "eco",
-                   "affaires", "économique", "première"}
-_PAX_PATTERNS = r"(\d+|one|two|three|four|five|six)\s+(adult|child|infant|passenger|pax)s?"
+_CABIN_KEYWORDS = {
+    "economy",
+    "business",
+    "first",
+    "premium",
+    "eco",
+    "affaires",
+    "économique",
+    "première",
+}
+_PAX_PATTERNS = (
+    r"(\d+|one|two|three|four|five|six)\s+(adult|child|infant|passenger|pax)s?"
+)
 
 
 @dataclass
@@ -50,7 +60,7 @@ class Entity:
     text: str
     start: int
     end: int
-    iata_code: str | None = None    # resolved IATA code if available
+    iata_code: str | None = None  # resolved IATA code if available
 
 
 class AviationNER:
@@ -96,8 +106,12 @@ class AviationNER:
                 if span not in seen_spans:
                     seen_spans.add(span)
                     entities.append(
-                        Entity(label="CABIN", text=text[idx : idx + len(cabin)],
-                               start=idx, end=idx + len(cabin))
+                        Entity(
+                            label="CABIN",
+                            text=text[idx : idx + len(cabin)],
+                            start=idx,
+                            end=idx + len(cabin),
+                        )
                     )
 
         return sorted(entities, key=lambda e: e.start)
@@ -115,7 +129,9 @@ class AviationNER:
         nlp = spacy.load("en_core_web_sm", disable=["lemmatizer"])
 
         # EntityRuler runs BEFORE the standard NER so aviation codes take priority
-        ruler = nlp.add_pipe("entity_ruler", before="ner", config={"overwrite_ents": True})
+        ruler = nlp.add_pipe(
+            "entity_ruler", before="ner", config={"overwrite_ents": True}
+        )
         ruler.add_patterns(build_spacy_patterns())
 
         return nlp
@@ -129,7 +145,7 @@ class AviationNER:
         Returns None to drop the entity.
         """
         if spacy_label in ("AIRPORT", "AIRLINE", "FLIGHT_NO", "CABIN", "PAX"):
-            return spacy_label          # already our label from EntityRuler
+            return spacy_label  # already our label from EntityRuler
         if spacy_label == "DATE":
             return "DATE"
         if spacy_label == "TIME":

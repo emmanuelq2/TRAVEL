@@ -43,12 +43,16 @@ class WhisperProvider(BaseASRProvider):
     ) -> TranscriptionResult:
         logger.info("whisper_transcribe_start", bytes=len(audio_bytes))
 
-        audio_file = (f"audio.{audio_format}", io.BytesIO(audio_bytes), f"audio/{audio_format}")
+        audio_file = (
+            f"audio.{audio_format}",
+            io.BytesIO(audio_bytes),
+            f"audio/{audio_format}",
+        )
 
         response = await self._client.audio.transcriptions.create(
             model=self._model,
             file=audio_file,
-            language=hint_language,        # None → auto-detect
+            language=hint_language,  # None → auto-detect
             response_format="verbose_json",
             # Domain hint: primes Whisper decoder toward aviation vocabulary
             prompt=IATA_PROMPT_HINT,

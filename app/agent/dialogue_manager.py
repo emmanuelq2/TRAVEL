@@ -26,7 +26,6 @@ Tool dispatch
 from __future__ import annotations
 
 import json
-from datetime import date
 from typing import Any
 
 import anthropic
@@ -34,7 +33,7 @@ import anthropic
 from app.agent.prompts import SYSTEM_PROMPT, TOOLS
 from app.core.config import get_settings
 from app.core.logging import get_logger
-from app.nlp.slot_filler import FlightSlots, Intent, ParsedUtterance
+from app.nlp.slot_filler import FlightSlots, ParsedUtterance
 
 logger = get_logger(__name__)
 
@@ -94,7 +93,7 @@ class DialogueManager:
 
         messages = list(session.history)
 
-        for _ in range(5):   # max tool-call iterations
+        for _ in range(5):  # max tool-call iterations
             response = await self._client.messages.create(
                 model=self._model,
                 max_tokens=self._max_tokens,
@@ -121,11 +120,13 @@ class DialogueManager:
                 for block in response.content:
                     if block.type == "tool_use":
                         result = await self._dispatch_tool(block.name, block.input)
-                        tool_results.append({
-                            "type": "tool_result",
-                            "tool_use_id": block.id,
-                            "content": json.dumps(result),
-                        })
+                        tool_results.append(
+                            {
+                                "type": "tool_result",
+                                "tool_use_id": block.id,
+                                "content": json.dumps(result),
+                            }
+                        )
 
                 messages.append({"role": "user", "content": tool_results})
                 continue

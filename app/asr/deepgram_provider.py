@@ -84,12 +84,14 @@ class DeepgramProvider(BaseASRProvider):
         channel = body.results.channels[0]
         alt = channel.alternatives[0]
 
-        detected_lang = getattr(body.metadata, "language", None) or hint_language or "en"
+        detected_lang = (
+            getattr(body.metadata, "language", None) or hint_language or "en"
+        )
         words = [
             {
-                "word":       w.word,
-                "start":      w.start,
-                "end":        w.end,
+                "word": w.word,
+                "start": w.start,
+                "end": w.end,
                 "confidence": w.confidence,
             }
             for w in (alt.words or [])
@@ -151,7 +153,9 @@ class DeepgramProvider(BaseASRProvider):
                                 provider=self.name,
                             )
                         )
-                elif isinstance(msg, (ListenV1Metadata, ListenV1SpeechStarted, ListenV1UtteranceEnd)):
+                elif isinstance(
+                    msg, (ListenV1Metadata, ListenV1SpeechStarted, ListenV1UtteranceEnd)
+                ):
                     pass  # informational — ignore
 
             await feeder_task

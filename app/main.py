@@ -93,7 +93,7 @@ Instrumentator().instrument(app).expose(app)
 
 # ── Routers ────────────────────────────────────────────────────────────────────
 app.include_router(audio_router, prefix="/v1")
-app.include_router(chat_router,  prefix="/v1")
+app.include_router(chat_router, prefix="/v1")
 
 
 # ── Health ─────────────────────────────────────────────────────────────────────

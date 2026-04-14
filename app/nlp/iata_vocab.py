@@ -13,7 +13,6 @@ Loads IATA airport + airline codes from data/iata_codes.json and exposes:
 from __future__ import annotations
 
 import json
-import re
 from pathlib import Path
 
 _DATA_PATH = Path(__file__).parent.parent.parent / "data" / "iata_codes.json"
@@ -21,8 +20,8 @@ _DATA_PATH = Path(__file__).parent.parent.parent / "data" / "iata_codes.json"
 with _DATA_PATH.open(encoding="utf-8") as _f:
     _raw = json.load(_f)
 
-AIRPORTS: dict[str, dict] = _raw["airports"]   # {"CDG": {name, city, country}}
-AIRLINES: dict[str, dict] = _raw["airlines"]   # {"AF":  {name, country}}
+AIRPORTS: dict[str, dict] = _raw["airports"]  # {"CDG": {name, city, country}}
+AIRLINES: dict[str, dict] = _raw["airlines"]  # {"AF":  {name, country}}
 
 # City → IATA reverse index (lowercase city → code)
 # First entry wins so that "Paris" → CDG (not ORY), "London" → LHR (not LGW), etc.
@@ -47,29 +46,35 @@ _AIRLINE_NAME_INDEX: dict[str, str] = {
 
 # ── ASR keyword boost list ─────────────────────────────────────────────────────
 
+
 def get_iata_keywords() -> list[str]:
     """
     Returns a flat list of strings to inject into Deepgram keyword boosts
     and Whisper prompt hints:  codes + city names + airline names.
     """
     terms: list[str] = []
-    terms += list(AIRPORTS.keys())                          # CDG, LHR, …
-    terms += [v["city"] for v in AIRPORTS.values()]         # Paris, London, …
-    terms += [v["name"] for v in AIRPORTS.values()]         # Charles de Gaulle, Heathrow, …
-    terms += list(AIRLINES.keys())                          # AF, BA, …
-    terms += [v["name"] for v in AIRLINES.values()]         # Air France, …
+    terms += list(AIRPORTS.keys())  # CDG, LHR, …
+    terms += [v["city"] for v in AIRPORTS.values()]  # Paris, London, …
+    terms += [v["name"] for v in AIRPORTS.values()]  # Charles de Gaulle, Heathrow, …
+    terms += list(AIRLINES.keys())  # AF, BA, …
+    terms += [v["name"] for v in AIRLINES.values()]  # Air France, …
     return terms
 
 
 # Short prompt that primes Whisper's BPE decoder toward aviation tokens
 IATA_PROMPT_HINT: str = (
     "Flight booking assistant. "
-    + "IATA codes: " + ", ".join(list(AIRPORTS.keys())[:20]) + ". "
-    + "Airlines: " + ", ".join(list(AIRLINES.keys())[:15]) + "."
+    + "IATA codes: "
+    + ", ".join(list(AIRPORTS.keys())[:20])
+    + ". "
+    + "Airlines: "
+    + ", ".join(list(AIRLINES.keys())[:15])
+    + "."
 )
 
 
 # ── spaCy EntityRuler patterns ─────────────────────────────────────────────────
+
 
 def build_spacy_patterns() -> list[dict]:
     """
@@ -89,8 +94,12 @@ def build_spacy_patterns() -> list[dict]:
 
     # Airport full names  (e.g. "Charles de Gaulle", "Heathrow", "Schiphol")
     _STRIP_SUFFIXES = (
-        " international airport", " international", " intl airport",
-        " intl", " airport", " aéroport",
+        " international airport",
+        " international",
+        " intl airport",
+        " intl",
+        " airport",
+        " aéroport",
     )
     for code, info in AIRPORTS.items():
         name = info["name"]
@@ -126,22 +135,27 @@ def build_spacy_patterns() -> list[dict]:
         patterns.append({"label": "AIRLINE", "pattern": name, "id": code})
 
     # Flight number pattern: 2-letter code + 1-4 digits (e.g. "AF 447", "BA2490")
-    patterns.append({
-        "label": "FLIGHT_NO",
-        "pattern": [
-            {"TEXT": {"REGEX": r"^[A-Z]{2}$"}},
-            {"TEXT": {"REGEX": r"^\d{1,4}$"}},
-        ],
-    })
-    patterns.append({
-        "label": "FLIGHT_NO",
-        "pattern": [{"TEXT": {"REGEX": r"^[A-Z]{2}\d{1,4}$"}}],
-    })
+    patterns.append(
+        {
+            "label": "FLIGHT_NO",
+            "pattern": [
+                {"TEXT": {"REGEX": r"^[A-Z]{2}$"}},
+                {"TEXT": {"REGEX": r"^\d{1,4}$"}},
+            ],
+        }
+    )
+    patterns.append(
+        {
+            "label": "FLIGHT_NO",
+            "pattern": [{"TEXT": {"REGEX": r"^[A-Z]{2}\d{1,4}$"}}],
+        }
+    )
 
     return patterns
 
 
 # ── Fuzzy resolver ────────────────────────────────────────────────────────────
+
 
 def resolve_location(text: str) -> str | None:
     """
